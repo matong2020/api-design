@@ -82,6 +82,7 @@ APIs
     output: {
       // session token
       token: string
+      openid: string
     }
 
   POST /app/api/users/v1/upload_wxa_user_info
@@ -89,12 +90,17 @@ APIs
     input: {
       // 小程序 wx.getUserInfo 接口返回的 UserInfo 的部分字段，不传或传 null 代表不更新， https://developers.weixin.qq.com/miniprogram/dev/api/open-api/user-info/wx.getUserInfo.html
       user_info: {
-        nickname: string
+        nickName: string
         gender: int
+        avatarUrl: string
+        country: string
+        province: string
+        city: string
+        language: string
       }
       // 小程序 getPhoneNumber 接口返回的部分字段，不传或传 null 代表不更新， https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/getPhoneNumber.html
       phone_raw: {
-        encrypted_data: string
+        encryptedData: string
         iv: string
       }
     }
@@ -152,7 +158,7 @@ APIs
         signType: string
         paySign: string
       }
-      open_id: string
+      openid: string
       // 充值订单ID
       deposit_id: string
     }
