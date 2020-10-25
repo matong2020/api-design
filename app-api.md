@@ -66,12 +66,6 @@
 ```
 schemas
 
-  paginator -> {
-    // 从 0 开始
-    page: int
-    size: int
-  }
-
 
 APIs
 
@@ -90,18 +84,19 @@ APIs
       token: string
     }
 
-  POST /app/api/users/v1/me
-    desc: 获取自己的用户信息
+  POST /app/api/users/v1/upload_wxa_user_info
+    desc: 上传微信用户信息
     input: {
-      // 以下字段是小程序 wx.getUserInfo 接口返回的子集， https://developers.weixin.qq.com/miniprogram/dev/api/open-api/user-info/wx.getUserInfo.html
-      userInfo: {
-        nickName: string
+      // 小程序 wx.getUserInfo 接口返回的 UserInfo 的部分字段，不传或传 null 代表不更新， https://developers.weixin.qq.com/miniprogram/dev/api/open-api/user-info/wx.getUserInfo.html
+      user_info: {
+        nickname: string
         gender: int
       }
-      rawData: string
-      signature: string
-      encryptedData: string
-      iv: string
+      // 小程序 getPhoneNumber 接口返回的部分字段，不传或传 null 代表不更新， https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/getPhoneNumber.html
+      phone_raw: {
+        encrypted_data: string
+        iv: string
+      }
     }
 
   POST /app/api/users/v1/me
@@ -111,55 +106,14 @@ APIs
       nickname: string
       // 手机号码，空字符串代表还没绑定手机号
       phone: string
+      // 性别，1-男，2-女，0-未知
+      sex: int
+      // 头像 url
+      avatar_url: string
       // 剩余使用次数，包含赠送的
       remaining_usage_count: int
-      // 性别，1-男，2-女，-1-未知
-      sex: int
       // 注册时间，秒级时间戳
       created_time: int
-    }
-
-  POST /app/api/users/v1/send_phone_binding_sms
-    desc: 发送手机号码绑定验证码短信
-    input: {
-      phone: string
-    }
-    biz_errors: {
-      2004: 请求发短信过于频繁
-    }
-
-  POST /app/api/users/v1/bind_phone
-    desc: 绑定手机号码
-    input: {
-      phone: string
-      binding_code: string
-    }
-    biz_errors: {
-      2005: 手机号码和验证码不匹配
-      2006: 手机号码已被绑定
-    }
-
-  POST /app/api/users/v1/send_phone_login_sms
-    desc: 发送手机号码登陆验证码短信
-    input: {
-      phone: string
-    }
-    biz_errors: {
-      2007: 请求发短信过于频繁
-    }
-
-  POST /app/api/users/v1/phone_login
-    desc: 手机号码登陆
-    input: {
-      phone: string
-      login_code: string
-    }
-    biz_errors: {
-      2008: 手机号码和验证码不匹配
-    }
-    output: {
-      // session token
-      token: string
     }
 
   POST /app/api/users/v1/feedback
@@ -168,11 +122,25 @@ APIs
       message: string
     }
 
+  POST /app/api/orders/v1/list_deposit_specs
+    desc: 获取充值配置列表
+    output: {
+      list: []{
+        id: string
+        // 金额，单位为分
+        amount: int
+        // 付费的次数
+        pay_for_usage_count: int
+        // 赠送的次数
+        free_usage_count: int
+      }
+    }
+
   POST /app/api/orders/v1/init_wxa_deposit
     desc: 发起微信小程序支付充值
     input: {
-      // 充值金额，单位为分
-      amount: int
+      // 充值配置ID
+      spec_id: string
     }
     output: {
       // 微信小程序调起支付需要的参数，详见https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=7_7&index=5
@@ -184,42 +152,44 @@ APIs
         signType: string
         paySign: string
       }
-      // 我们生成的支付ID，用来查询是否支付成功
-      pay_id: string
+      open_id: string
+      // 充值订单ID
+      deposit_id: string
     }
 
-  POST /app/api/orders/v1/get_pay_status
-    desc: 获取支付状态
+  POST /app/api/orders/v1/get_deposit_status
+    desc: 获取充值订单状态
     input: {
-      // 调用支付接口返回的支付ID
-      pay_id: string
+      // 发起充值接口返回的充值订单ID
+      deposit_id: string
     }
     biz_errors: {
-      2101: 支付ID未找到
+      2101: 充值订单ID未找到
     }
     output: {
-      // 状态：1-支付中，2-支付成功，3-支付失败
+      // 状态：1-完成，2-支付中，3-失败
       pay_status: int
     }
 
-  POST /app/api/orders/v1/list
-    desc: 获取用户自己的订单列表
-    input: #paginator
+  POST /app/api/orders/v1/list_deposits
+    desc: 获取用户自己的充值记录
+    input: {
+      // cursor 用来标记流式列表接口拉取进度，每次请求需要带上上次请求返回的 cursor，第一次请求传空字符串
+      cursor: string
+      // 有些时候返回的条目数量可能不会严格等于这个值
+      size: int
+    }
     output: {
+      // 下次拉取的开始标记，空字符串代表结束
+      cursor: string
       list: []{
         id: string
-        // 订单类型：1-充值，2-购买服务，3-提现
-        type: int
-        // 金额变更，单位为分，充值时这个值是正数，购买服务、提现时是负数
+        // 金额，单位为分
         amount: int
-        // 订单状态：1-进行中，2-完成
+        // 状态：1-完成，2-支付中，3-失败
         status: int
-        // 订单产生时时间，秒级时间戳
-        time: int
-        // 地点名称，比如某某购物中心，仅在订单类型是 购买服务 时有该字段
-        location_name: string
-        // 地址，比如xxx市xxx路xxx号，仅在订单类型是 购买服务 时有该字段
-        address: string
+        // 订单创建时间，秒级时间戳
+        created_time: int
       }
     }
 
@@ -230,11 +200,14 @@ APIs
       latitude: float
       // 经度
       longitude: float
-      // 性别：1-男，2-女，-1-男厕女厕都列出来
-      sex: int
-      paginator: #paginator
+      // cursor 用来标记流式列表接口拉取进度，每次请求需要带上上次请求返回的 cursor，第一次请求传空字符串
+      cursor: string
+      // 有些时候返回的条目数量可能不会严格等于这个值
+      size: int
     }
     output: {
+      // 下次拉取的开始标记，空字符串代表结束
+      cursor: string
       list: []{
         washroom: {
           // 地点名称，比如某某购物中心
@@ -258,6 +231,20 @@ APIs
       }
     }
 
+  POST /app/api/toilets/v1/get_toilet_status
+    desc: 获取马桶状态
+    input: {
+      // 二维码里的ID
+      bar_code_id: string
+    }
+    biz_errors: {
+      2201: 找不到马桶
+    }
+    output: {
+      // 状态：1-空闲，2-占用，3-维修中
+      toilet_status: int
+    }
+
   POST /app/api/toilets/v1/use
     desc: 使用马桶
     input: {
@@ -265,12 +252,38 @@ APIs
       bar_code_id: string
     }
     biz_errors: {
-      2201: 找不到马桶
-      2202: 马桶不是空闲状态
-      2203: 余额不足
+      2202: 找不到马桶
+      2203: 马桶不是空闲状态
+      2204: 余额不足
     }
     output: {
       order_id: string
+    }
+
+  POST /app/api/orders/v1/list_use_records
+    desc: 获取用户自己的使用记录
+    input: {
+      // cursor 用来标记流式列表接口拉取进度，每次请求需要带上上次请求返回的 cursor，第一次请求传空字符串
+      cursor: string
+      // 有些时候返回的条目数量可能不会严格等于这个值
+      size: int
+    }
+    output: {
+      // 下次拉取的开始标记，空字符串代表结束
+      cursor: string
+      list: []{
+        id: string
+        // 马桶硬件ID
+        hardware_id: string
+        // 订单状态：1-进行中，2-完成
+        status: int
+        // 地点名称，比如某某购物中心
+        location_name: string
+        // 地址，比如xxx市xxx路xxx号
+        address: string
+        // 使用时间，秒级时间戳
+        record_time: int
+      }
     }
 
 ```
