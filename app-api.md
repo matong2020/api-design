@@ -100,7 +100,7 @@ APIs
       }
       // 小程序 getPhoneNumber 接口返回的部分字段，不传或传 null 代表不更新， https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/getPhoneNumber.html
       phone_raw: {
-        encryptedData: string
+        encrypted_data: string
         iv: string
       }
     }
