@@ -66,6 +66,29 @@
 ```
 schemas
 
+  cmsToiletStatistics -> {
+    // 单日使用时长，单位是秒
+    usage_duration_yesterday: int
+    // 单日空闲时长，单位是秒
+    idle_duration_yesterday: int
+    // 总使用时长，单位是秒
+    usage_duration_total: int
+    // 总空闲时长，单位是秒
+    idle_duration_total: int
+    // 单日收入，单位是分
+    income_yesterday: int
+    // 单日消耗，单位是分
+    cost_yesterday: int
+    // 单日利润，单位是分
+    profit_yesterday: int
+    // 总收入，单位是分
+    income_total: int
+    // 总消耗，单位是分
+    cost_total: int
+    // 总利润，单位是分
+    profit_total: int
+  }
+
   cmsToilet -> {
     // 设备ID
     toilet_id: string
@@ -97,6 +120,8 @@ schemas
     remark: string
     // 添加时间，秒级时间戳
     created_time: int
+    // 统计信息
+    statistics: #cmsToiletStatistics
   }
 
   cmsConsumerPayPerUsage -> {
@@ -190,14 +215,14 @@ APIs
   POST /cms/api/users/v1/update_toilet
     desc: 更新马桶
     input: {
-      // toilet的所有字段都要传有意义的值，不要因为不更新就不传
+      // toilet的除 statistics 外的所有字段都要传有意义的值，不要因为不更新就不传
       toilet: #cmsToilet
     }
 
   POST /cms/api/users/v1/add_toilet
     desc: 添加马桶
     input: {
-      // toilet的所有字段都要传有意义的值
+      // toilet的除 statistics 外的所有字段都要传有意义的值
       toilet: #cmsToilet
     }
     biz_errors: {
