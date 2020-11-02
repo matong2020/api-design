@@ -66,10 +66,6 @@
 ```
 schemas
 
-  cmsConsumerPayPerUsage -> {
-    amount: int
-  }
-
   cmsToilet -> {
     // 设备ID
     toilet_id: string
@@ -95,12 +91,21 @@ schemas
     maintainer_name: string
     // 物业人员手机号
     maintainer_phone: string
-    // 物业公司
-    manager_company: string
+    // 物业公司ID
+    manager_company_id: string
     // 备注
     remark: string
     // 添加时间，秒级时间戳
     created_time: int
+  }
+
+  cmsConsumerPayPerUsage -> {
+    amount: int
+  }
+
+  paginator -> {
+    page: int
+    size: int
   }
 
   cmsThreshold -> {
@@ -114,11 +119,6 @@ schemas
     possible_glitch: int
     // 一次使用消耗金额，单位为分
     cost_per_usage: int
-  }
-
-  paginator -> {
-    page: int
-    size: int
   }
 
   cmsDepositSpec -> {
@@ -184,6 +184,7 @@ APIs
       status: int
     }
     output: {
+      list: []#cmsToilet
     }
 
   POST /cms/api/users/v1/update_toilet
@@ -258,6 +259,40 @@ APIs
   POST /cms/api/users/v1/add_deposit_spec
     desc: 添加充值配置
     input: #cmsDepositSpec
+
+  POST /cms/api/users/v1/list_companies
+    desc: 公司列表
+    output: {
+      list: []{
+        id: string
+        name: string
+      }
+    }
+
+  POST /cms/api/users/v1/list_region_provinces
+    desc: 省份列表
+    output: {
+      list: []string
+    }
+
+  POST /cms/api/users/v1/list_region_cities
+    desc: 城市列表
+    input: {
+      province: string
+    }
+    output: {
+      list: []string
+    }
+
+  POST /cms/api/users/v1/list_region_districts
+    desc: 区列表
+    input: {
+      province: string
+      city: string
+    }
+    output: {
+      list: []string
+    }
 
   POST /cms/api/users/v1/import_toilets
     desc: 批量导入马桶
