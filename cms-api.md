@@ -108,6 +108,10 @@ schemas
     address: string
     // 名字，比如 xxx购物中心
     location_name: string
+    // 纬度
+    latitude: float
+    // 经度
+    longitude: float
     // 楼层
     floor: int
     // 性别；1-男，2-女
