@@ -66,27 +66,33 @@
 ```
 schemas
 
-  cmsToiletStatistics -> {
-    // 单日使用时长，单位是秒
-    usage_duration_yesterday: int
-    // 单日空闲时长，单位是秒
-    idle_duration_yesterday: int
-    // 总使用时长，单位是秒
-    usage_duration_total: int
-    // 总空闲时长，单位是秒
-    idle_duration_total: int
-    // 单日收入，单位是分
-    income_yesterday: int
-    // 单日消耗，单位是分
-    cost_yesterday: int
-    // 单日利润，单位是分
-    profit_yesterday: int
-    // 总收入，单位是分
-    income_total: int
-    // 总消耗，单位是分
-    cost_total: int
-    // 总利润，单位是分
-    profit_total: int
+  cmsConsumerPayPerUsage -> {
+    amount: int
+  }
+
+  cmsDepositSpec -> {
+    id: string
+    // 金额，单位为分
+    amount: int
+    // 付费的次数
+    pay_for_usage_count: int
+    // 赠送的次数
+    free_usage_count: int
+    // 免费次数过期时间，单位为天
+    free_usage_expired_days: int
+  }
+
+  cmsThreshold -> {
+    // 套膜不足标准
+    cover_insufficient: int
+    // 电量不足标准，传15代表15%
+    battery_insufficient: int
+    // 电量关闭标准，传10代表10%
+    battery_close: int
+    // 疑似故障标准，传50代表50%
+    possible_glitch: int
+    // 一次使用消耗金额，单位为分
+    cost_per_usage: int
   }
 
   cmsToilet -> {
@@ -124,38 +130,32 @@ schemas
     statistics: #cmsToiletStatistics
   }
 
-  cmsConsumerPayPerUsage -> {
-    amount: int
+  cmsToiletStatistics -> {
+    // 单日使用时长，单位是秒
+    usage_duration_yesterday: int
+    // 单日空闲时长，单位是秒
+    idle_duration_yesterday: int
+    // 总使用时长，单位是秒
+    usage_duration_total: int
+    // 总空闲时长，单位是秒
+    idle_duration_total: int
+    // 单日收入，单位是分
+    income_yesterday: int
+    // 单日消耗，单位是分
+    cost_yesterday: int
+    // 单日利润，单位是分
+    profit_yesterday: int
+    // 总收入，单位是分
+    income_total: int
+    // 总消耗，单位是分
+    cost_total: int
+    // 总利润，单位是分
+    profit_total: int
   }
 
   paginator -> {
     page: int
     size: int
-  }
-
-  cmsThreshold -> {
-    // 套膜不足标准
-    cover_insufficient: int
-    // 电量不足标准，传15代表15%
-    battery_insufficient: int
-    // 电量关闭标准，传10代表10%
-    battery_close: int
-    // 疑似故障标准，传50代表50%
-    possible_glitch: int
-    // 一次使用消耗金额，单位为分
-    cost_per_usage: int
-  }
-
-  cmsDepositSpec -> {
-    id: string
-    // 金额，单位为分
-    amount: int
-    // 付费的次数
-    pay_for_usage_count: int
-    // 赠送的次数
-    free_usage_count: int
-    // 免费次数过期时间，单位为天
-    free_usage_expired_days: int
   }
 
 
