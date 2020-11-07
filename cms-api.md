@@ -323,6 +323,26 @@ APIs
       list: []string
     }
 
+  POST /cms/api/toilets/v1/bind_bar_code_id
+    desc: 绑定二维码
+    input: {
+      toilet_id: string
+      bar_code_id: string
+    }
+    biz_errors: {
+      3005: 马桶不存在
+      3006: 二维码ID已被绑定
+    }
+
+  POST /cms/api/toilets/v1/get_batch_bar_code_ids
+    desc: 批量获取二维码ID
+    input: {
+      count: int
+    }
+    output: {
+      list: []string
+    }
+
   POST /cms/api/users/v1/import_toilets
     desc: 批量导入马桶
     input: {
