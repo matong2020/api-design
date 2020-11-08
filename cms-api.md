@@ -326,6 +326,9 @@ APIs
     input: {
       toilet_id: string
       bar_code_id: string
+      gateway: string
+      latitude: float
+      longitude: float
     }
     biz_errors: {
       3005: 马桶不存在
@@ -339,6 +342,22 @@ APIs
     }
     output: {
       list: []string
+    }
+
+  POST /cms/api/users/v1/get_toilet
+    desc: 获取马桶详情
+    input: {
+      toilet_id: string
+    }
+    output: {
+      province: string
+      city: string
+      district: string
+      address: string
+      floor: int
+      // 性别；1-男，2-女
+      sex: int
+      toilet_id: string
     }
 
   POST /cms/api/users/v1/import_toilets
