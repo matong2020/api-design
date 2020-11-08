@@ -258,8 +258,6 @@ APIs
         toilet_id: string
         // 使用时间，秒级时间戳
         created_time: int
-        // 一天里的第几次使用
-        no_of_day: int
         // 使用时长，单位为秒
         duration: int
       }
