@@ -122,6 +122,10 @@ schemas
     gateway: string
     // 状态；1-正常，2-套膜不足，3-电量不足，4-疑似故障，5-明确故障，6-套膜不足关闭，7-电量不足关闭
     status: int
+    // 电池电量
+    battery: int
+    // 套膜数量
+    seat_cover_count: int
     // 物业人员名字
     maintainer_name: string
     // 物业人员手机号
