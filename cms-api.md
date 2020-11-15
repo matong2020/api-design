@@ -118,6 +118,8 @@ schemas
     sex: int
     // 编号
     no: int
+    // 网关
+    gateway: string
     // 状态；1-正常，2-套膜不足，3-电量不足，4-疑似故障，5-明确故障，6-套膜不足关闭，7-电量不足关闭
     status: int
     // 物业人员名字
@@ -126,6 +128,8 @@ schemas
     maintainer_phone: string
     // 物业公司ID
     manager_company_id: string
+    // 物业公司
+    manager_company: string
     // 备注
     remark: string
     // 添加时间，秒级时间戳
@@ -135,6 +139,8 @@ schemas
   }
 
   cmsToiletStatistics -> {
+    // 单日使用次数
+    usage_count_yesterday: int
     // 单日使用时长，单位是秒
     usage_duration_yesterday: int
     // 单日空闲时长，单位是秒
@@ -213,6 +219,7 @@ APIs
       status: int
     }
     output: {
+      total_pages: int
       list: []#cmsToilet
     }
 
@@ -235,6 +242,13 @@ APIs
       3004: 物业公司不存在
     }
 
+  POST /cms/api/users/v1/toilet_detail
+    desc: 马桶详情
+    input: {
+      toilet_id: string
+    }
+    output: #cmsToilet
+
   POST /cms/api/users/v1/get_threshold
     desc: 获取阈值
     output: #cmsThreshold
@@ -253,6 +267,7 @@ APIs
       toilet_id: string
     }
     output: {
+      total_pages: int
       list: []{
         // 马桶ID
         toilet_id: string
@@ -345,7 +360,7 @@ APIs
     }
 
   POST /cms/api/users/v1/get_toilet
-    desc: 获取马桶详情
+    desc: 获取马桶信息
     input: {
       toilet_id: string
     }
