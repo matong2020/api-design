@@ -219,7 +219,7 @@ APIs
       status: int
     }
     output: {
-      total_pages: int
+      total: int
       list: []#cmsToilet
     }
 
@@ -267,7 +267,7 @@ APIs
       toilet_id: string
     }
     output: {
-      total_pages: int
+      total: int
       list: []{
         // 马桶ID
         toilet_id: string
