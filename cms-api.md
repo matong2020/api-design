@@ -66,6 +66,13 @@
 ```
 schemas
 
+  cmsCompany -> {
+    id: string
+    name: string
+    // 添加时间，秒级时间戳
+    created_time: int
+  }
+
   cmsConsumerPayPerUsage -> {
     amount: int
   }
@@ -309,10 +316,7 @@ APIs
   POST /cms/api/users/v1/list_companies
     desc: 公司列表
     output: {
-      list: []{
-        id: string
-        name: string
-      }
+      list: []#cmsCompany
     }
 
   POST /cms/api/users/v1/list_region_provinces
@@ -377,6 +381,186 @@ APIs
       // 性别；1-男，2-女
       sex: int
       toilet_id: string
+    }
+
+  POST /cms/api/users/v1/list_orders
+    desc: 订单列表
+    input: {
+      paginator: #paginator
+      // 开始时间，包含
+      start_time: int
+      // 结束时间，不包含
+      end_time: int
+      // 状态，1-支付中，2-支付成功
+      status: int
+      // 用户ID
+      user_id: string
+      // 订单ID
+      order_id: string
+    }
+    output: {
+      total: int
+      list: []{
+        // 订单创建时间
+        created_time: int
+        // 订单ID
+        order_id: string
+        // 用户ID
+        user_id: string
+        // 状态，1-支付中，2-支付成功
+        status: int
+        // 金额，单位为分
+        amount: int
+      }
+    }
+
+  POST /cms/api/users/v1/list_feedbacks
+    desc: 意见反馈列表
+    input: {
+      paginator: #paginator
+      // 开始时间，包含
+      start_time: int
+      // 结束时间，不包含
+      end_time: int
+      // 用户ID
+      user_id: string
+      // 状态；1-未读，2-已读
+      status: int
+    }
+    output: {
+      total: int
+      list: []{
+        feedback_id: string
+        // 创建时间
+        created_time: int
+        // 用户ID
+        user_id: string
+        // 意见内容
+        message: string
+        // 状态；1-未读，2-已读
+        status: int
+      }
+    }
+
+  POST /cms/api/users/v1/mark_feedback_as_read
+    desc: 标记意见反馈已读
+    input: {
+      feedback_id: string
+    }
+
+  POST /cms/api/users/v1/list_users
+    desc: 用户列表
+    input: {
+      paginator: #paginator
+      // 开始时间，包含
+      start_time: int
+      // 结束时间，不包含
+      end_time: int
+      // 用户ID，支持模糊匹配
+      user_id_like: string
+      // 手机号码，支持模糊匹配
+      phone_like: string
+      // 性别；1-男，2-女
+      sex: int
+    }
+    output: {
+      total: int
+      list: []{
+        // 创建时间
+        created_time: int
+        user_id: string
+        phone: string
+        // 性别；0-未知，1-男，2-女
+        sex: int
+        // 使用次数
+        usage_count: int
+        // 剩余次数
+        usage_left: int
+        // 总充值金额
+        total_deposit_amount: int
+        // 总消费金额
+        total_consumed_amount: int
+      }
+    }
+
+  POST /cms/api/users/v1/query_companies
+    desc: 公司查询
+    input: {
+      paginator: #paginator
+      // 开始时间，包含
+      start_time: int
+      // 结束时间，不包含
+      end_time: int
+      // 公司名，支持模糊匹配
+      name_like: string
+    }
+    output: {
+      total: int
+      list: []#cmsCompany
+    }
+
+  POST /cms/api/users/v1/add_company
+    desc: 添加公司
+    input: {
+      // 公司名
+      name: string
+    }
+    biz_errors: {
+      3030: 公司名已存在
+    }
+
+  POST /cms/api/users/v1/update_company
+    desc: 更新公司
+    input: {
+      // 需要更新的公司ID
+      company_id: string
+      // 公司名
+      name: string
+    }
+
+  POST /cms/api/users/v1/get_confirm_code
+    desc: 获取二级密码
+    output: {
+      // 二级密码
+      confirm_code: string
+    }
+
+  POST /cms/api/users/v1/change_confirm_code
+    desc: 修改二级密码
+    input: {
+      // 老的二级密码
+      old_confirm_code: string
+      // 新的二级密码
+      new_confirm_code: string
+    }
+    biz_errors: {
+      3035: 旧的二级密码不匹配
+    }
+
+  POST /cms/api/users/v1/count_total_deposit_users
+    desc: 充值总人数
+    output: {
+      count: int
+    }
+
+  POST /cms/api/users/v1/sum_total_deposit_amount
+    desc: 充值总金额
+    output: {
+      // 总金额，单位为分
+      total_amount: int
+    }
+
+  POST /cms/api/users/v1/count_total_consumers
+    desc: 消费总人数
+    output: {
+      count: int
+    }
+
+  POST /cms/api/users/v1/sum_total_consume_amount
+    desc: 消费总金额
+    output: {
+      // 总金额，单位为分
+      total_amount: int
     }
 
   POST /cms/api/users/v1/import_toilets
