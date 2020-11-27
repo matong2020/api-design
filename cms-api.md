@@ -145,6 +145,8 @@ schemas
     manager_company: string
     // 备注
     remark: string
+    // 是否已上线
+    is_online: bool
     // 添加时间，秒级时间戳
     created_time: int
     // 统计信息
@@ -383,6 +385,8 @@ APIs
       // 性别；1-男，2-女
       sex: int
       toilet_id: string
+      glitch: string
+      is_online: bool
     }
 
   POST /cms/api/users/v1/list_orders
@@ -399,6 +403,8 @@ APIs
       user_id: string
       // 订单ID
       order_id: string
+      // 支付类型，1-微信支付
+      pay_vendor: int
     }
     output: {
       total: int
@@ -413,6 +419,8 @@ APIs
         status: int
         // 金额，单位为分
         amount: int
+        // 支付类型，1-微信支付
+        pay_vendor: int
       }
     }
 
@@ -564,6 +572,35 @@ APIs
     output: {
       // 总金额，单位为分
       total_amount: int
+    }
+
+  POST /cms/api/users/v1/set_toilet_action
+    desc: 设置马桶命令，调试用
+    input: {
+      toilet_id: string
+      // 马桶指令：0-无操作，1-启动
+      action: int
+    }
+    biz_errors: {
+      3040: 马桶ID未找到
+    }
+
+  POST /cms/api/users/v1/put_toilet_online
+    desc: 设置马桶命令，调试用
+    input: {
+      toilet_id: string
+    }
+    biz_errors: {
+      3040: 马桶ID未找到
+    }
+
+  POST /cms/api/users/v1/put_toilet_offline
+    desc: 设置马桶命令，调试用
+    input: {
+      toilet_id: string
+    }
+    biz_errors: {
+      3040: 马桶ID未找到
     }
 
   POST /cms/api/users/v1/import_toilets
