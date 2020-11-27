@@ -471,6 +471,7 @@ APIs
         // 创建时间
         created_time: int
         user_id: string
+        nickname: string
         phone: string
         // 性别；0-未知，1-男，2-女
         sex: int
