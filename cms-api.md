@@ -133,6 +133,8 @@ schemas
     battery: int
     // 套膜数量
     seat_cover_count: int
+    // 错误码
+    glitch: string
     // 物业人员名字
     maintainer_name: string
     // 物业人员手机号
