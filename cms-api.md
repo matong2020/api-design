@@ -75,6 +75,7 @@ schemas
 
   cmsConsumerPayPerUsage -> {
     amount: int
+    confirm_code: string
   }
 
   cmsDepositSpec -> {
@@ -232,10 +233,14 @@ APIs
       manager_company: string
       // 状态；1-正常，2-套膜不足，3-电量不足，4-疑似故障，5-明确故障，6-套膜不足关闭，7-电量不足关闭
       status: int
+      // 硬件自定义错误码不是OK，true 获取错误码为 OK 的马桶，false 获取错误码不为 OK 的马桶
+      glitch_is_ok: bool
     }
     output: {
       total: int
       list: []#cmsToilet
+      page: int
+      size: int
     }
 
   POST /cms/api/users/v1/update_toilet
@@ -300,6 +305,9 @@ APIs
   POST /cms/api/users/v1/set_consumer_pay_per_usage
     desc: 设置单次消费费用
     input: #cmsConsumerPayPerUsage
+    biz_errors: {
+      3010: 二级密码错误
+    }
 
   POST /cms/api/users/v1/list_deposit_specs
     desc: 充值配置列表
@@ -311,11 +319,21 @@ APIs
     desc: 删除充值配置
     input: {
       deposit_spec_id: string
+      confirm_code: string
+    }
+    biz_errors: {
+      3010: 二级密码错误
     }
 
   POST /cms/api/users/v1/add_deposit_spec
     desc: 添加充值配置
-    input: #cmsDepositSpec
+    input: {
+      deposit_spec: #cmsDepositSpec
+      confirm_code: string
+    }
+    biz_errors: {
+      3010: 二级密码错误
+    }
 
   POST /cms/api/users/v1/list_companies
     desc: 公司列表
@@ -422,6 +440,8 @@ APIs
         // 支付类型，1-微信支付
         pay_vendor: int
       }
+      page: int
+      size: int
     }
 
   POST /cms/api/users/v1/list_feedbacks
@@ -436,6 +456,10 @@ APIs
       user_id: string
       // 状态；1-未读，2-已读
       status: int
+      // 用户手机号
+      user_phone: string
+      // 用户昵称，模糊匹配
+      user_nickname_like: string
     }
     output: {
       total: int
@@ -472,6 +496,8 @@ APIs
       phone_like: string
       // 性别；1-男，2-女
       sex: int
+      // 昵称，支持模糊匹配
+      nickname_like: string
     }
     output: {
       total: int
@@ -492,6 +518,8 @@ APIs
         // 总消费金额
         total_consumed_amount: int
       }
+      page: int
+      size: int
     }
 
   POST /cms/api/users/v1/query_companies
@@ -572,6 +600,58 @@ APIs
     output: {
       // 总金额，单位为分
       total_amount: int
+    }
+
+  POST /cms/api/users/v1/list_accounts
+    desc: 账户列表
+    input: {
+      paginator: #paginator
+      // 开始时间，包含
+      start_time: int
+      // 结束时间，不包含
+      end_time: int
+      // 账户名
+      name: string
+      // 公司ID
+      company_id: string
+      // 手机号码
+      phone: string
+      // 状态；1-在职，2-离职
+      status: int
+      // 角色ID
+      role_id: string
+    }
+    output: {
+      total: int
+      // 里面的每个账户都没有管理区域信息
+      list: []{
+        id: string
+        created_time: int
+        name: string
+        phone: string
+        company_id: string
+        company_name: string
+        role_id: string
+        role_name: string
+        status: int
+        managing_area: {
+          // 是否管理全部区域，如果 all 为 true 则 areas 为空
+          all: bool
+          // 如果 areas 不为空则 all 为 false
+          areas: []{
+            province: string
+            city: string
+            district: string
+            address: string
+            building_no_start: int
+            building_no_end: int
+            floor_start: int
+            floor_end: int
+            sex_male: bool
+            sex_female: bool
+          }
+        }
+      }
     }
 
   POST /cms/api/users/v1/set_toilet_action
