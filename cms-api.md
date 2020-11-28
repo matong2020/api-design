@@ -701,4 +701,21 @@ APIs
       __doc_placeholder__: string
     }
 
+ POST /cms/api/banners/v1/settting
+    desc: banner图设置
+    input: {
+      config: []{
+        // 0=显示 1=不显示
+        is_show: int
+        // 跳转url
+        redirect_url: string
+        // 显示图片base64格式
+        display_images: string
+      }
+    }
+    output: {
+      // 0=设置成功 1=设置失败
+      status: int
+    }
+
 ```

@@ -292,4 +292,21 @@ APIs
       }
     }
 
+  POST /common/api/v1/banner/configs
+    desc: 首页banner列表
+    input: {
+      // bannerid默认传1即可
+      bid: int
+    }
+    output: {
+      banner_configs: []{
+        // 0=显示 1=不显示
+        is_show: int
+        // 跳转url
+        redirect_url: string
+        // 显示图片base64格式
+        display_images: string
+      }
+    }
+
 ```
