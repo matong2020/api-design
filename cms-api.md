@@ -701,21 +701,19 @@ APIs
       __doc_placeholder__: string
     }
 
- POST /cms/api/banners/v1/settting
+  POST /cms/api/banners/v1/settting
     desc: banner图设置
     input: {
-      config: []{
-        // 0=显示 1=不显示
-        is_show: int
-        // 跳转url
-        redirect_url: string
-        // 显示图片base64格式
-        display_images: string
-      }
+      // 1=上传banner图片列表 2=获取banner图片列表
+      type: int
+      // 如果type=1，config字段不能为空,否则可以为空
+      config: []#bannersSettingInner
     }
     output: {
       // 0=设置成功 1=设置失败
       status: int
+      // 如果requet参数中type=2时则返回的时banner图片列表,如果从来未上传过banner图片则此字段为空.
+      config: []#bannersSettingInner
     }
    
     POST /cms/api/v1/menu/lists
