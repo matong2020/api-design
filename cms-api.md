@@ -717,5 +717,104 @@ APIs
       // 0=设置成功 1=设置失败
       status: int
     }
+   
+    POST /cms/api/v1/menu/lists
+    desc: 菜单列表
+    input: {
+      // 用户ID
+      role_id: string
+    }
+    output: {
+      menu_lists: []{
+        // 菜单名称
+        name: string
+        // 角色
+        role_id: string
+        // 角色名称
+        role_name: string
+        // 接口路由
+        router: string
+        // 查看权限 1=选中 0=未选中
+        viewer: int
+        // 编辑权限 1=选中 0=未选中
+        editor: int
+      }
+    }
+
+  POST /cms/api/v1/meun/setting
+    desc: 设置用户菜单权限
+    input: {
+      // 用户ID
+      role_id: string
+      // 菜单json字符串
+      menu_setting: []{
+        // 菜单名称
+        name: string
+        // 角色
+        role_id: string
+        // 角色名称
+        role_name: string
+        // 接口路由
+        router: string
+        // 编辑权限
+        editor: int
+        // 查看权限
+        viewer: int
+      }
+    }
+    output: {
+      // 0=设置成功 非0 设置失败
+      status: int
+    }
+
+
+   POST /cms/api/v1/role/add
+    desc: 添加角色
+    input: {
+      // 角色名
+      role_name: string
+    }
+    output: {
+      // 0=添加角色成功 非0 添加角色失败
+      status: int
+    }
+
+  POST /cms/api/v1/role/update
+    desc: 更新角色
+    input: {
+      // 角色ID
+      role_id: string
+      // 角色名称
+      role_name: string
+    }
+    output: {
+      // 0=更新角色成功 非0 添加角色失败
+      status: int
+    }
+
+  POST /cms/api/v1/role/update
+    desc: 更新角色
+    input: {
+      // 用户ID
+      user_id: string
+    }
+    output: {
+      // 0=更新角色成功 非0 添加角色失败
+      role_list: []{
+        // 菜单名称
+        name: string
+        // 角色
+        role_id: string
+        // 角色名称
+        role_name: string
+        // 接口路由
+        router: string
+        // 查看权限 1=选中 0=未选中
+        viewer: int
+        // 编辑权限 1=选中 0=未选中
+        editor: int
+      }
+    }
+
 
 ```
