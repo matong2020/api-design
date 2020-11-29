@@ -473,6 +473,10 @@ APIs
         message: string
         // 状态；1-未读，2-已读
         status: int
+        // 用户手机号码
+        user_phone: string
+        // 用户昵称
+        user_nickname: string
       }
     }
 
