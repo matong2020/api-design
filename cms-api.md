@@ -695,6 +695,7 @@ APIs
     input: {
       name: string
       phone: string
+      password: string
     }
     output: {
       account_id: string
