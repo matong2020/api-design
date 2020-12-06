@@ -87,7 +87,10 @@ schemas
     role_id: string
     role_name: string
     status: int
-    managing_area: #managingArea
+    // 是否管理全部区域，如果 all 为 true 则 areas 为空
+    all: bool
+    // 如果 areas 不为空则 all 为 false
+    areas: []#cmsArea
   }
 
   cmsArea -> {
@@ -214,13 +217,6 @@ schemas
     cost_total: int
     // 总利润，单位是分
     profit_total: int
-  }
-
-  managingArea -> {
-    // 是否管理全部区域，如果 all 为 true 则 areas 为空
-    all: bool
-    // 如果 areas 不为空则 all 为 false
-    areas: []#cmsArea
   }
 
   paginator -> {
