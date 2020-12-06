@@ -759,28 +759,59 @@ APIs
       config: []#bannersSettingInner
     }
    
-    POST /cms/api/v1/menu/lists
-    desc: 菜单列表
-    input: {
-      // 用户ID
-      role_id: string
-    }
-    output: {
-      menu_lists: []{
-        // 菜单名称
-        name: string
-        // 角色
-        role_id: string
-        // 角色名称
-        role_name: string
-        // 接口路由
-        router: string
+    schemas
+    
+      menuListsInner -> {
+        // 路由name
+        router_name: string
+        children: []#menuchildrenListsInner
         // 查看权限 1=选中 0=未选中
         viewer: int
         // 编辑权限 1=选中 0=未选中
         editor: int
       }
-    }
+    
+      menuchildrenListsInner -> {
+        // 路由name
+        router_name: string
+        // 查看权限 1=选中 0=未选中
+        viewer: int
+        // 编辑权限 1=选中 0=未选中
+        editor: int
+      }
+    
+    
+    APIs
+    
+      POST /cms/api/v1/menu/lists
+        desc: 角色列表
+        input: {
+          // 用户ID
+          role_id: string
+        }
+        output: {
+          menu_lists: []{
+            // 角色
+            role_id: string
+            // 角色名称
+            role_name: string
+            // 菜单列表
+            menu_lists: []#menuListsInner
+          }
+        }
+    
+      POST /cms/api/v1/meun/setting
+        desc: 设置角色权限
+        input: {
+          // 用户ID
+          role_id: string
+          // 菜单json字符串
+          menu_setting: []#menuListsInner
+        }
+        output: {
+          // 0=设置成功 非0 设置失败
+          status: int
+        }
 
   POST /cms/api/v1/meun/setting
     desc: 设置用户菜单权限
