@@ -686,7 +686,7 @@ APIs
   POST /cms/api/users/v1/update_account
     desc: 更新账户
     input: {
-      // account 的所有字段都要传有意义的值，不要因为不更新就不传
+      // account 除了company_name/role_name外的所有字段都要传有意义的值，不要因为不更新就不传
       account: #cmsAccount
     }
 
