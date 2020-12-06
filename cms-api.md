@@ -66,6 +66,43 @@
 ```
 schemas
 
+  bannersSettingInner -> {
+    // banner id控制banner图片显示位置
+    bid: int
+    // 0=显示 1=不显示
+    is_show: int
+    // 跳转url
+    redirect_url: string
+    // 显示图片base64格式
+    display_images: string
+  }
+
+  cmsAccount -> {
+    id: string
+    created_time: int
+    name: string
+    phone: string
+    company_id: string
+    company_name: string
+    role_id: string
+    role_name: string
+    status: int
+    managing_area: #managingArea
+  }
+
+  cmsArea -> {
+    province: string
+    city: string
+    district: string
+    address: string
+    building_no_start: int
+    building_no_end: int
+    floor_start: int
+    floor_end: int
+    sex_male: bool
+    sex_female: bool
+  }
+
   cmsCompany -> {
     id: string
     name: string
@@ -177,6 +214,13 @@ schemas
     cost_total: int
     // 总利润，单位是分
     profit_total: int
+  }
+
+  managingArea -> {
+    // 是否管理全部区域，如果 all 为 true 则 areas 为空
+    all: bool
+    // 如果 areas 不为空则 all 为 false
+    areas: []#cmsArea
   }
 
   paginator -> {
@@ -296,6 +340,8 @@ APIs
         // 使用时长，单位为秒
         duration: int
       }
+      page: int
+      size: int
     }
 
   POST /cms/api/users/v1/get_consumer_pay_per_usage
@@ -478,6 +524,8 @@ APIs
         // 用户昵称
         user_nickname: string
       }
+      page: int
+      size: int
     }
 
   POST /cms/api/users/v1/mark_feedback_as_read
@@ -540,6 +588,8 @@ APIs
     output: {
       total: int
       list: []#cmsCompany
+      page: int
+      size: int
     }
 
   POST /cms/api/users/v1/add_company
@@ -628,34 +678,27 @@ APIs
     output: {
       total: int
       // 里面的每个账户都没有管理区域信息
-      list: []{
-        id: string
-        created_time: int
-        name: string
-        phone: string
-        company_id: string
-        company_name: string
-        role_id: string
-        role_name: string
-        status: int
-        managing_area: {
-          // 是否管理全部区域，如果 all 为 true 则 areas 为空
-          all: bool
-          // 如果 areas 不为空则 all 为 false
-          areas: []{
-            province: string
-            city: string
-            district: string
-            address: string
-            building_no_start: int
-            building_no_end: int
-            floor_start: int
-            floor_end: int
-            sex_male: bool
-            sex_female: bool
-          }
-        }
-      }
+      list: []#cmsAccount
+      page: int
+      size: int
+    }
+
+  POST /cms/api/users/v1/update_account
+    desc: 更新账户
+    input: {
+      // account 除了company_name/role_name外的所有字段都要传有意义的值，不要因为不更新就不传
+      account: #cmsAccount
+    }
+
+  POST /cms/api/users/v1/new_account
+    desc: 新增账户
+    input: {
+      name: string
+      phone: string
+      password: string
+    }
+    output: {
+      account_id: string
     }
 
   POST /cms/api/users/v1/set_toilet_action
